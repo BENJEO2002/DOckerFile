@@ -1,25 +1,27 @@
-# Use an official base image with Java installed
-FROM openjdk:17-jdk-slim
+# Use Amazon Linux 2 as the base image
+FROM amazonlinux:2
 
-# Set environment variables for Tomcat
-ENV CATALINA_HOME /usr/local/tomcat
-ENV PATH $CATALINA_HOME/bin:$PATH
+# Set the working directory inside the container
+WORKDIR /usr/local
 
-# Specify the version of Tomcat
-ARG TOMCAT_VERSION=10.1.10
+# Install OpenJDK 17, curl, and wget
+RUN yum update -y && yum install -y \
+    java-17-amazon-corretto-devel \
+    curl \
+    wget \
+    tar \
+    && yum clean all
 
-# Download and unpack Tomcat
-RUN apt-get update && apt-get install -y curl \
-    && curl -fSL https://dlcdn.apache.org/tomcat/tomcat-10/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz \
+# Install Tomcat
+RUN curl -fSL https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.10/bin/apache-tomcat-10.1.10.tar.gz \
     | tar -xzC /usr/local/ \
-    && mv /usr/local/apache-tomcat-${TOMCAT_VERSION} /usr/local/tomcat \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    && mv /usr/local/apache-tomcat-10.1.10 /usr/local/tomcat
 
-# Set working directory
-WORKDIR $CATALINA_HOME
-
-# Expose the default Tomcat port
+# Expose Tomcat port
 EXPOSE 8080
 
-# Start Tomcat
-CMD ["catalina.sh", "run"]
+# Set the environment variable for Tomcat home
+ENV CATALINA_HOME=/usr/local/tomcat
+
+# Set the command to run Tomcat when the container starts
+CMD ["sh", "-c", "$CATALINA_HOME/bin/catalina.sh run"]
