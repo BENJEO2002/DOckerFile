@@ -12,10 +12,11 @@ RUN yum update -y && yum install -y \
     tar \
     && yum clean all
 
-# Install Tomcat
-RUN curl -fSL https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.10/bin/apache-tomcat-10.1.10.tar.gz \
-    | tar -xzC /usr/local/ \
-    && mv /usr/local/apache-tomcat-10.1.10 /usr/local/tomcat
+# Download Tomcat and extract it
+RUN curl -o apache-tomcat.tar.gz https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.10/bin/apache-tomcat-10.1.10.tar.gz \
+    && tar -xzvf apache-tomcat.tar.gz -C /usr/local/ \
+    && mv /usr/local/apache-tomcat-10.1.10 /usr/local/tomcat \
+    && rm -f apache-tomcat.tar.gz
 
 # Expose Tomcat port
 EXPOSE 8080
