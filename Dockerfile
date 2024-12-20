@@ -18,3 +18,37 @@ EXPOSE 80
 
 # Set the command to start the Apache HTTP Server when the container starts
 CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+
+
+# pipeline {
+#     agent {
+#         label 'slave' // Ensure this matches the actual agent label or use 'any'
+#     }
+
+#     environment {
+#         DOCKER_IMAGE = 'benjeo/httpd' // Image name
+#     }
+
+#     stages {
+#         stage('Build Docker Image') {
+#             steps {
+#                 script {
+#                     // Build Docker image from the Dockerfile
+#                     docker.build(DOCKER_IMAGE) // You can specify the Dockerfile path if needed
+#                 }
+#             }
+#         }
+
+#         stage('Push to Docker Hub') {
+#             steps {
+#                 script {
+#                     // Push Docker image to Docker Hub
+#                     docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
+#                         docker.image(DOCKER_IMAGE).push()
+#                     }
+#                 }
+#             }
+#         }
+#     }
+# }
+
